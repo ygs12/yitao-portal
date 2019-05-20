@@ -15,7 +15,7 @@ const shortcut = {
            <ul class='fr'> \
                <li class='f-item'>我的订单</li> \
                <li class='f-item space'></li> \
-               <li class='f-item'><a href='/home.html' target='_blank'>我的易淘</a></li> \
+               <li class='f-item'><a href='/home-index.html' target='_blank'>我的易淘</a></li> \
                <li class='f-item space'></li> \
                <li class='f-item'>易淘会员</li> \
                <li class='f-item space'></li> \
