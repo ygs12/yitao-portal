@@ -1,57 +1,37 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>易淘商城--秒杀页面</title>
-	<link rel="icon" href="/assets/img/favicon.ico">
-
-
-    <link rel="stylesheet" type="text/css" href="css/webbase.css" />
-    <link rel="stylesheet" type="text/css" href="css/widget-jquery.autocomplete.css" />
-    <link rel="stylesheet" type="text/css" href="css/pages-seckill-index.css" />
+    <link rel="stylesheet" type="text/css" href="./css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="./css/widget-jquery.autocomplete.css" />
+    <link rel="stylesheet" type="text/css" href="./css/pages-seckill-index.css" />
 </head>
-
 <body>
-
-	<!-- 头部栏位 -->
-	<!--页面顶部，由js动态加载-->
-	<script type="text/javascript" src="plugins/jquery/jquery.min.js"></script>
-	<div id="nav-bottom"></div>
-    <script type="text/javascript">$("#nav-bottom").load("top.html");</script>
-	
-
-<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
-<script type="text/javascript">
-$(function(){
-	$("#service").hover(function(){
-		$(".service").show();
-	},function(){
-		$(".service").hide();
-	});
-	$("#shopcar").hover(function(){
-		$("#shopcarlist").show();
-	},function(){
-		$("#shopcarlist").hide();
-	});
-
-})
-</script>
-<script type="text/javascript" src="js/plugins/sui/sui.min.js"></script>
-<script type="text/javascript" src="js/widget/jquery.autocomplete.js"></script>
-<script type="text/javascript" src="js/widget/nav.js"></script>
-<script type="text/javascript" src="js/pages/seckill-index.js"></script>
+<!-- 头部栏位 -->
+<!--页面顶部，由js动态加载-->
+<script type="text/javascript" src="./js/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="./js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="./js/widget/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="./js/widget/nav.js"></script>
+<script type="text/javascript" src="./js/pages/seckill-index.js"></script>
 <script>
-	   $(function(){
-		   $("#code").hover(function(){
-			   $(".erweima").show();
-		   },function(){
-			   $(".erweima").hide();
-		   });
-	   })
-	</script>
-</body>
+    $(function(){
+        $("#code").hover(function(){
+            $(".erweima").show();
+        },function(){
+            $(".erweima").hide();
+        });
+    })
+</script>
+<script src="./js/vue/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="./js/common.js"></script>
+<div id="seckillApp">
+	<div id="nav-bottom">
+		<yt-top/>
+	</div>
 
 	<div class="py-container index">
 		<!--banner-->
@@ -62,188 +42,21 @@ $(function(){
 		<!--商品列表-->
 		<div class="goods-list">
 			<ul class="seckill" id="seckill">
-				<li class="seckill-item" >
-					<div class="pic" onclick="location.href='seckill-item.html'">
-						<img src="img/_/list.jpg" alt=''  >
+				<li class="seckill-item" v-for="(item,i) in seckillList">
+					<div class="pic" @click="gotoSeckillItem(item.skuId)">
+						<img :src="item.image" alt=''  >
 					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
+					<div class="intro"><span>{{item.title}}</span></div>
+					<div class='price'><b class='sec-price'>￥{{yt.formatPrice(item.seckillPrice)}}</b><b class='ever-price'>￥{{yt.formatPrice(item.price)}}</b></div>
 					<div class='num'>
-						<div>已售87%</div>
+						<div>已售{{((item.seckillTotal - item.stock)/item.seckillTotal*100).toFixed(0)}}%</div>
 						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
+							<div class='sui-progress progress-danger'><span :style="{width: (((item.seckillTotal - item.stock)/item.seckillTotal*100).toFixed(0))+'%'}" class='bar'></span></div>
 						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
+						<div>剩余<b class='owned'>{{item.stock}}</b>件</div>
 					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
+					<a class='sui-btn btn-block btn-buy' href='javascript:;' @click="gotoSeckillItem(item.skuId)" target='_blank'>立即抢购</a>
 				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-				<li class="seckill-item">
-					<div class="pic">
-						<img src="img/_/list.jpg" alt=''>
-					</div>
-					<div class="intro"><span>Apple苹果iPhone 6s 32G金色 移动联通电信4G手机</span></div>
-					<div class='price'><b class='sec-price'>￥6088</b><b class='ever-price'>￥6988</b></div>
-					<div class='num'>
-						<div>已售87%</div>
-						<div class='progress'>
-							<div class='sui-progress progress-danger'><span style='width: 70%;' class='bar'></span></div>
-						</div>
-						<div>剩余<b class='owned'>29</b>件</div>
-					</div>
-					<a class='sui-btn btn-block btn-buy' href='seckill-item.html' target='_blank'>立即抢购</a>
-				</li>
-
-
 			</ul>
 		</div>
 		<div class="cd-top">
@@ -260,11 +73,36 @@ $(function(){
 			</div>
 		</div>
 	</div>
-
-	<!-- 底部栏位 -->
-	<!--页面底部，由js动态加载-->
-	<div class="clearfix footer"></div>
-	<script type="text/javascript">$(".footer").load("foot.html");</script>
-	<!--页面底部END-->
-
+</div>
+<script type="text/javascript">
+	var seckillVm = new Vue({
+		el:"#seckillApp",
+		data:{
+            yt,
+			seckillList:[],
+		},
+		created:function () {
+			this.loadData();
+        },
+		methods:{
+		  loadData() {
+			  yt.http.get("/seckill/list").then((resp)=>{
+			      this.seckillList = resp.data;
+			  });
+		  },
+		  gotoSeckillItem(id) {
+		      location.href = "/seckill-item.html?goodsId="+id;
+		  }
+		},
+        components:{
+            ytTop: () => import("./js/pages/top.js")
+		}
+	});
+</script>
+<!-- 底部栏位 -->
+<!--页面底部，由js动态加载-->
+<div class="clearfix footer"></div>
+<script type="text/javascript">$(".footer").load("foot.html");</script>
+<!--页面底部END-->
+</body>
 </html>

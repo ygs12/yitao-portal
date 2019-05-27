@@ -513,7 +513,7 @@ const stringify = function(object, options) {
 }
 
 axios.defaults.baseURL = "http://api.yitao.com/api";
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 5000000;
 axios.defaults.withCredentials = true;
 
 // 配置对象

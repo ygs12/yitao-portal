@@ -16,13 +16,6 @@
 </head>
 
 <body>
-	
-	<!-- 头部栏位 -->
-	<!--页面顶部，由js动态加载-->
-	<script type="text/javascript" src="plugins/jquery/jquery.min.js"></script>
-	<div id="nav-bottom"></div>
-    <script type="text/javascript">$("#nav-bottom").load("top.html");</script>
-
 <script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
 <script type="text/javascript">
 $(function(){
@@ -39,29 +32,34 @@ $(function(){
 
 })
 </script>
-<script type="text/javascript" src="js/widget/cartPanelView.js"></script>
-<script type="text/javascript" src="js/model/cartModel.js"></script>
 <script type="text/javascript" src="js/czFunction.js"></script>
 <script type="text/javascript" src="js/plugins/jquery.easing/jquery.easing.min.js"></script>
 <script type="text/javascript" src="js/plugins/sui/sui.min.js"></script>
-<script type="text/javascript" src="js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
-<script type="text/javascript" src="js/plugins/jquery.jqzoom/zoom.js"></script>
+<script type="text/javascript" src="js/layer/layer.js"></script>
 <script type="text/javascript">
-			$(function(){
-				$("ul.btn-choose li a.btn-xlarge").click(function(){
-					alert("钻中");
-				});
-				$("#star").click(function(){
-					alert("关注成功");
-				})
-			})
-		</script>
+	$(function(){
+		$("ul.btn-choose li a.btn-xlarge").click(function(){
+			alert("钻中");
+		});
+		$("#star").click(function(){
+			alert("关注成功");
+		})
+	})
+</script>
+	<script src="./js/vue/vue.js"></script>
+	<script src="./js/axios.min.js"></script>
+	<script src="./js/common.js"></script>
 </body>
+<div id="seckillDetailApp">
+	<div id="nav-bottom">
+		<yt-top/>
+	</div>
+
 	<div class="py-container">
 		<div id="item">
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
-					
+
 				</ul>
 			</div>
 			<!--product-info-->
@@ -71,32 +69,32 @@ $(function(){
 					<div class="zoom">
 						<!--默认第一个预览-->
 						<div id="preview" class="spec-preview">
-							<span class="jqzoom"><img jqimg="img/_/b1.png" src="img/_/s1.png" /></span>
-						</div>						
+							<span class="jqzoom"><img jqimg="goods.image" :src="goods.image" width="400px" height="400px" /></span>
+						</div>
 					</div>
-					
+
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>Apple iPhone 6s（A1700）64G玫瑰金色 移动通信电信4G手机</h4>
+						<h4>{{goods.title}}</h4>
 					</div>
 					<div class="news">
-						<span><img src="img/_/clock.png"/>品优秒杀</span>
-						<span class="overtime">距离结束：01:56:78</span>
-						</div>
+						<span><img src="img/_/clock.png"/>易淘秒杀</span>
+						<span class="overtime">距离结束：{{countTime}}</span>
+					</div>
 					<div class="summary">
 						<div class="summary-wrap">
-							
+
 							<div class="fl title">
 								<i>秒杀价</i>
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<em>5299.00</em>
-								<span>原价：5699.00</span>
+								<em>{{yt.formatPrice(goods.seckillPrice)}}</em>
+								<span>原价：{{yt.formatPrice(goods.price)}}</span>
 							</div>
 							<div class="fr remark">
-								
+								剩余库存:{{goods.stock}}
 							</div>
 						</div>
 						<div class="summary-wrap">
@@ -128,17 +126,18 @@ $(function(){
 						</div>
 					</div>
 					<div class="clearfix choose">
-						
-
 						<div class="summary-wrap">
 							<div class="fl title">
-								
+
 							</div>
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a href="pay.html" target="_blank" class="sui-btn  btn-danger addshopcar">立即抢购</a>
+										<img id="verifyCodeImg" :src="verifyImage" width="80" height="32" v-show="flag" @click="refreshVerifyCode(goods.skuId)"/>
+										<input id="verifyCode" v-model="verifyCode" class="form-control" v-show="flag" style="width: 40px;height:26px;"/>
+										<a href="javascript:;" target="_blank" class="sui-btn  btn-danger addshopcar" @click="getSecKillPath(goods.skuId)">立即抢购</a>
 									</li>
+									<span v-text="msg" style="color: red"></span>
 								</ul>
 							</div>
 						</div>
@@ -187,9 +186,9 @@ $(function(){
 										</div>
 										<div class="price">
 											<strong>
-											<em>¥</em>
-											<i>6088.00</i>
-										</strong>
+												<em>¥</em>
+												<i>6088.00</i>
+											</strong>
 										</div>
 										<div class="operate">
 											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
@@ -206,9 +205,9 @@ $(function(){
 										</div>
 										<div class="price">
 											<strong>
-											<em>¥</em>
-											<i>6088.00</i>
-										</strong>
+												<em>¥</em>
+												<i>6088.00</i>
+											</strong>
 										</div>
 										<div class="operate">
 											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
@@ -225,9 +224,9 @@ $(function(){
 										</div>
 										<div class="price">
 											<strong>
-											<em>¥</em>
-											<i>6088.00</i>
-										</strong>
+												<em>¥</em>
+												<i>6088.00</i>
+											</strong>
 										</div>
 										<div class="operate">
 											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
@@ -242,9 +241,9 @@ $(function(){
 										</div>
 										<div class="price">
 											<strong>
-											<em>¥</em>
-											<i>6088.00</i>
-										</strong>
+												<em>¥</em>
+												<i>6088.00</i>
+											</strong>
 										</div>
 										<div class="operate">
 											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
@@ -259,9 +258,9 @@ $(function(){
 										</div>
 										<div class="price">
 											<strong>
-											<em>¥</em>
-											<i>6088.00</i>
-										</strong>
+												<em>¥</em>
+												<i>6088.00</i>
+											</strong>
 										</div>
 										<div class="operate">
 											<a href="javascript:void(0);" class="sui-btn btn-bordered">加入购物车</a>
@@ -276,7 +275,7 @@ $(function(){
 					</div>
 				</div>
 				<div class="fr detail">
-					
+
 					<div class="tab-main intro">
 						<ul class="sui-nav nav-tabs tab-wraped">
 							<li class="active">
@@ -309,26 +308,8 @@ $(function(){
 						<div class="tab-content tab-wraped">
 							<div id="one" class="tab-pane active">
 								<ul class="goods-intro unstyled">
-									<li>分辨率：1920*1080(FHD)</li>
-									<li>后置摄像头：1200万像素</li>
-									<li>前置摄像头：500万像素</li>
-									<li>核 数：其他</li>
-									<li>频 率：以官网信息为准</li>
-									<li>品牌： Apple</li>
-									<li>商品名称：APPLEiPhone 6s Plus</li>
-									<li>商品编号：1861098</li>
-									<li>商品毛重：0.51kg</li>
-									<li>商品产地：中国大陆</li>
-									<li>热点：指纹识别，Apple Pay，金属机身，拍照神器</li>
-									<li>系统：苹果（IOS）</li>
-									<li>像素：1000-1600万</li>
-									<li>机身内存：64GB</li>
+
 								</ul>
-								<div class="intro-detail">
-									<img src="img/_/intro01.png" />
-									<img src="img/_/intro02.png" />
-									<img src="img/_/intro03.png" />
-								</div>
 							</div>
 							<div id="two" class="tab-pane">
 								<p>规格与包装</p>
@@ -346,23 +327,123 @@ $(function(){
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
+</div>
+<script type="text/javascript">
+    var seckillDetailVm = new Vue({
+        el:"#seckillDetailApp",
+        data:{
+            yt,
+			verifyCode:'',
+            verifyImage:'',
+			msg:'',
+			flag:true, // 显示验证码
+			countTime:{},
+			goods:{},
+        },
+        created:function () {
+           yt.http.get("/seckill/"+yt.getUrlParam("goodsId"))
+			   .then((resp) => {
+			       this.goods = resp.data;
 
+			       // 开始时间：
+				   let startSeconds = new Date(this.goods.startTime).getTime();
+				   // 结束时间:
+				   let endSeconds = new Date(this.goods.endTime).getTime();
+			       let seconds = Math.floor((endSeconds - startSeconds)/1000);
 
-	<!-- 底部栏位 -->
-	<!--页面底部，由js动态加载-->
-	<div class="clearfix footer"></div>
-	<script type="text/javascript">$(".footer").load("foot.html");</script>
-	<!--页面底部END-->
-	
-	
-	
-	<!--侧栏面板开始,由js动态加载-->
-	<script type="text/javascript" src="plugins/jquery/jquery.min.js"></script>
-	<div class="J-global-toolbar"></div>
-    <script type="text/javascript">$(".J-global-toolbar").load("side.html");</script>
+			       const time = setInterval(() => {
+			           seconds = seconds - 1;
+			           this.countTime = this.convertTimeString(seconds);
+
+			           if (seconds <= 0) {
+			               clearInterval(time);
+					   }
+				   },1000);
+			   });
+			   // 获取验证图片
+			   this.verifyImage = "http://api.yitao.com/api/seckill/verifyCode?goodsId="+yt.getUrlParam("goodsId");
+        },
+        methods:{
+            //转换秒为天小时分钟秒格式  XXX天 10:22:33
+            convertTimeString(timeSeconds){
+                let days= Math.floor( timeSeconds/(60*60*24));//天数
+                let hours= Math.floor((timeSeconds-days*60*60*24)/(60*60));//小数数
+                let minutes= Math.floor((timeSeconds -days*60*60*24 - hours*60*60)/60);//分钟数
+                let seconds= timeSeconds -days*60*60*24 - hours*60*60 -minutes*60; //秒数
+                let timeString="";
+                // 0补全2位
+                hours = hours < 10 ? "0"+hours : hours;
+                minutes = minutes < 10 ? "0"+minutes : minutes;
+                seconds = seconds < 10 ? "0"+seconds : seconds;
+
+                if(days>0){
+                    timeString=days+"天 ";
+                }
+                return timeString+hours+":"+minutes+":"+seconds;
+            },
+			// 获取秒杀地址
+            getSecKillPath(goodsId) {
+				yt.http.post("/seckill/getPath",{
+				    goodsId: goodsId,
+                    verifyCode: this.verifyCode
+				}).then((resp) => {
+				    // 真正执行秒杀
+				    this.doSecKill(resp.data.data,goodsId);
+				}).catch(() => layer.msg('验证码输入错误'));
+			},
+			// 执行秒杀
+			doSecKill(path,goodsId) {
+                yt.http.post("/seckill/"+path+"/seck/"+goodsId)
+					.then((resp) =>{
+						// 通过返回结果
+						console.log(resp+"======");
+					});
+			},
+			// 获取秒杀结果
+            getSecKillResult(goodsId) {
+                if(data.code == 0){
+                    var result = data.data;
+                    if(result < 0){
+                        layer.msg("对不起，秒杀失败");
+                    }else if(result == 0){//继续轮询
+                        setTimeout(function(){
+                            getMiaoshaResult(goodsId);
+                        }, 200);
+                    }else{
+                        layer.confirm("恭喜你，秒杀成功！查看订单？", {btn:["确定","取消"]},
+                            function(){
+                                window.location.href="/order_detail.htm?orderId="+result;
+                            },
+                            function(){
+                                layer.closeAll();
+                            });
+                    }
+                }else{
+                    layer.msg(data.msg);
+                }
+			},
+            refreshVerifyCode(goodsId){
+                this.verifyImage = "http://api.yitao.com/api/seckill/verifyCode?goodsId="+goodsId+"&timestamp="+new Date().getTime();
+    		}
+
+        },
+        components:{
+            ytTop: () => import("./js/pages/top.js")
+        }
+    });
+</script>
+<!-- 底部栏位 -->
+<!--页面底部，由js动态加载-->
+<div class="clearfix footer"></div>
+<script type="text/javascript">$(".footer").load("foot.html");</script>
+<!--页面底部END-->
+
+<!--侧栏面板开始,由js动态加载-->
+<script type="text/javascript" src="plugins/jquery/jquery.min.js"></script>
+<div class="J-global-toolbar"></div>
+<script type="text/javascript">$(".J-global-toolbar").load("side.html");</script>
 
 <!--购物车单元格 模板-->
 <script type="text/template" id="tbar-cart-item-template">
@@ -382,6 +463,4 @@ $(function(){
 	</div>
 </script>
 <!--侧栏面板结束-->
-
-
 </html>
