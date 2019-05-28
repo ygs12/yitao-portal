@@ -26,7 +26,7 @@
                     <h3><img src="img/_/right.png" width="48" height="48">　恭喜您，支付成功啦！</h3>
                     <div class="paydetail">
                     <p>支付方式：微信支付</p>
-                    <p>支付金额：￥{{yt.formatPrice(totalPay)}}元</p>
+                    <p>支付金额：￥{{totalPay}}元</p>
                     <p class="button">
                         <a href="home-index.html" class="sui-btn btn-xlarge btn-danger">查看订单</a>&nbsp;&nbsp;&nbsp;&nbsp;
                         <a href="index.html"  class="sui-btn btn-xlarge ">继续购物</a>
@@ -49,7 +49,7 @@
             },
             created(){
                 yt.verifyUser().then(() => {
-                    this.totalPay = yt.store.get("totalPay");
+                    this.totalPay = parseFloat(yt.store.get("totalPay")).toFixed(2);
                     //1.删除本地数据
                     yt.store.del("selectedCarts");
                     yt.store.del("orderId");

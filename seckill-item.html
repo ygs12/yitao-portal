@@ -90,7 +90,7 @@ $(function(){
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<em>{{yt.formatPrice(goods.seckillPrice)}}</em>
+								<em id="sekillPrice">{{yt.formatPrice(goods.seckillPrice)}}</em>
 								<span>原价：{{yt.formatPrice(goods.price)}}</span>
 							</div>
 							<div class="fr remark">
@@ -341,14 +341,14 @@ $(function(){
 			flag:true, // 显示验证码
 			countTime:{},
 			goods:{},
+			tip:'', // 提示结果
         },
         created:function () {
            yt.http.get("/seckill/"+yt.getUrlParam("goodsId"))
 			   .then((resp) => {
 			       this.goods = resp.data;
-
-			       // 开始时间：
-				   let startSeconds = new Date(this.goods.startTime).getTime();
+			       // 服务端当前时间：
+				   let startSeconds = new Date(this.goods.currentTime).getTime();
 				   // 结束时间:
 				   let endSeconds = new Date(this.goods.endTime).getTime();
 			       let seconds = Math.floor((endSeconds - startSeconds)/1000);
@@ -389,40 +389,70 @@ $(function(){
 				    goodsId: goodsId,
                     verifyCode: this.verifyCode
 				}).then((resp) => {
+                    this.tip = resp.data;
 				    // 真正执行秒杀
-				    this.doSecKill(resp.data.data,goodsId);
-				}).catch(() => layer.msg('验证码输入错误'));
+				    this.doSecKill(this.tip.data,goodsId);
+				}).catch(() => {
+				    console.log(this.tip);
+				    layer.msg(this.tip.msg == null ? "验证码错误！" : this.tip.msg);
+				    this.refreshVerifyCode(goodsId);
+				});
 			},
 			// 执行秒杀
 			doSecKill(path,goodsId) {
                 yt.http.post("/seckill/"+path+"/seck/"+goodsId)
-					.then((resp) =>{
-						// 通过返回结果
-						console.log(resp+"======");
-					});
+				.then((resp) =>{
+					if (resp.data.code == 0) {
+					    // 获取秒杀结果
+					    this.getSecKillResult(goodsId);
+					} else {
+					    layer.msg(resp.data.msg);
+                        this.refreshVerifyCode(goodsId);
+					}
+				}).catch(()=>{
+					layer.msg("客户端请求异常");
+                    this.refreshVerifyCode(goodsId);
+				});
 			},
 			// 获取秒杀结果
             getSecKillResult(goodsId) {
-                if(data.code == 0){
-                    var result = data.data;
-                    if(result < 0){
-                        layer.msg("对不起，秒杀失败");
-                    }else if(result == 0){//继续轮询
-                        setTimeout(function(){
-                            getMiaoshaResult(goodsId);
-                        }, 200);
-                    }else{
-                        layer.confirm("恭喜你，秒杀成功！查看订单？", {btn:["确定","取消"]},
-                            function(){
-                                window.location.href="/order_detail.htm?orderId="+result;
-                            },
-                            function(){
-                                layer.closeAll();
-                            });
-                    }
-                }else{
-                    layer.msg(data.msg);
-                }
+                let loading = layer.load(1, {
+                    shade: [0.1,'#fff'] //0.1透明度的白色背景
+                });
+                //3.2开启定时任务，查询秒杀订单状态
+                const taskId = setInterval(() => {
+                    yt.http.get("/seckill/result?goodsId="+goodsId,{
+                        transformResponse: [
+                            function (data) {
+                                return data;
+                            }
+                        ]
+                    }).then(resp => {
+                        let orderId = resp.data;
+                        console.log(resp);
+                        console.log(orderId);
+
+                        if (orderId != "undefined" || orderId != -1){
+                            //3.5秒杀成功
+                            clearInterval(taskId);
+                            layer.close(loading);
+                            layer.confirm("恭喜你，秒杀成功！查看订单？", {btn:["确定","取消"]},
+                                function(){
+                                	yt.store.set("totalPay", $("#sekillPrice").text());
+                                	yt.store.set("orderId", orderId);
+                                    window.location.href="/pay.html";
+                                },
+                                function(){
+                                    layer.closeAll();
+                                });
+                        } else {
+                            layer.close(loading);
+                            //3.5秒杀失败
+                            clearInterval(taskId);
+                            layer.msg("对不起，秒杀失败");
+                        }
+                    }).catch(()=>{layer.msg("对不起，秒杀失败")});
+                },3000);
 			},
             refreshVerifyCode(goodsId){
                 this.verifyImage = "http://api.yitao.com/api/seckill/verifyCode?goodsId="+goodsId+"&timestamp="+new Date().getTime();
